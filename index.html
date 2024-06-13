@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA System</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/qna"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Question Answering System</h1>
+        <input type="text" id="question" placeholder="Ask a question..." />
+        <button onclick="answerQuestion()">Ask</button>
+        <div id="answer"></div>
+    </div>
+
+    <script>
+        let model;
+        async function loadModel() {
+            model = await qna.load();
+            document.getElementById('answer').innerHTML = "Model loaded.";
+        }
+
+        async function answerQuestion() {
+            if (!model) {
+                document.getElementById('answer').innerHTML = "Model not loaded.";
+                return;
+            }
+            const question = document.getElementById('question').value;
+            const context = await fetch('preprocessed_space_exploration.txt').then(response => response.text());
+
+            const answers = await model.findAnswers(question, context);
+            document.getElementById('answer').innerHTML = answers.length ? answers[0].text : 'No answer found';
+        }
+
+        // Load the model when the page loads
+        window.onload = loadModel;
+    </script>
+</body>
+</html>
+
