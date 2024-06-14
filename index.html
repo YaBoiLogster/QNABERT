@@ -39,8 +39,14 @@
             font-size: 16px;
             cursor: pointer;
         }
+        .spinner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
         .spinner {
-            margin: 20px auto;
             width: 40px;
             height: 40px;
             position: relative;
@@ -79,11 +85,13 @@
         <input type="text" id="question" placeholder="Enter your question here" onkeypress="handleKeyPress(event)">
         <br>
         <button onclick="answerQuestion()">Ask</button>
-        <div class="spinner" id="spinner">
-            <div class="dot1"></div>
-            <div class="dot2"></div>
+        <div class="spinner-container">
+            <p id="answer">Loading model, please wait...</p>
+            <div class="spinner" id="spinner">
+                <div class="dot1"></div>
+                <div class="dot2"></div>
+            </div>
         </div>
-        <p id="answer">Loading model, please wait...</p>
     </div>
     <script>
         let model;
