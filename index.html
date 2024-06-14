@@ -7,20 +7,61 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/qna"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        .spinner {
+            margin: 50px auto;
+            width: 40px;
+            height: 40px;
+            position: relative;
+            text-align: center;
+            animation: spin 1.5s infinite linear;
+        }
+        .dot1, .dot2 {
+            width: 60%;
+            height: 60%;
+            display: inline-block;
+            position: absolute;
+            top: 0;
+            background-color: #333;
+            border-radius: 100%;
+            animation: bounce 2.0s infinite ease-in-out;
+        }
+        .dot2 {
+            top: auto;
+            bottom: 0;
+            animation-delay: -1.0s;
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: scale(0.0); }
+            50% { transform: scale(1.0); }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Question Answering System</h1>
-        <input type="text" id="question" placeholder="Ask a question..." />
-        <button onclick="answerQuestion()">Ask</button>
-        <div id="answer"></div>
+    <h1>QA System</h1>
+    <input type="text" id="question" placeholder="Enter your question here">
+    <button onclick="answerQuestion()">Ask</button>
+    <p id="answer">Loading model, please wait...</p>
+    <div class="spinner" id="spinner">
+        <div class="dot1"></div>
+        <div class="dot2"></div>
     </div>
-
     <script>
         let model;
+
         async function loadModel() {
+            document.getElementById('spinner').style.display = 'inline-block';
             model = await qna.load();
-            document.getElementById('answer').innerHTML = "Model loaded.";
+            document.getElementById('answer').innerHTML = "Model loaded. Ask your question!";
+            document.getElementById('spinner').style.display = 'none';
         }
 
         async function answerQuestion() {
@@ -35,9 +76,7 @@
             document.getElementById('answer').innerHTML = answers.length ? answers[0].text : 'No answer found';
         }
 
-        // Load the model when the page loads
         window.onload = loadModel;
     </script>
 </body>
 </html>
-
