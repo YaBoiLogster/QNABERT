@@ -10,16 +10,43 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        .subheader {
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #555;
+        }
+        .container {
             text-align: center;
-            padding: 50px;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
         }
         .spinner {
-            margin: 50px auto;
+            margin: 20px auto;
             width: 40px;
             height: 40px;
             position: relative;
             text-align: center;
             animation: spin 1.5s infinite linear;
+            display: none;
         }
         .dot1, .dot2 {
             width: 60%;
@@ -46,13 +73,17 @@
     </style>
 </head>
 <body>
-    <h1>QA System</h1>
-    <input type="text" id="question" placeholder="Enter your question here">
-    <button onclick="answerQuestion()">Ask</button>
-    <p id="answer">Loading model, please wait...</p>
-    <div class="spinner" id="spinner">
-        <div class="dot1"></div>
-        <div class="dot2"></div>
+    <div class="container">
+        <h1>QA System</h1>
+        <p class="subheader">Ask it questions about space exploration! (e.g., "Who was involved in the space race?")</p>
+        <input type="text" id="question" placeholder="Enter your question here" onkeypress="handleKeyPress(event)">
+        <br>
+        <button onclick="answerQuestion()">Ask</button>
+        <div class="spinner" id="spinner">
+            <div class="dot1"></div>
+            <div class="dot2"></div>
+        </div>
+        <p id="answer">Loading model, please wait...</p>
     </div>
     <script>
         let model;
@@ -70,10 +101,23 @@
                 return;
             }
             const question = document.getElementById('question').value;
+            if (question.trim() === "") {
+                document.getElementById('answer').innerHTML = "Please enter a question.";
+                return;
+            }
+            document.getElementById('spinner').style.display = 'inline-block';
+            document.getElementById('answer').innerHTML = "";
             const context = await fetch('preprocessed_space_exploration.txt').then(response => response.text());
 
             const answers = await model.findAnswers(question, context);
+            document.getElementById('spinner').style.display = 'none';
             document.getElementById('answer').innerHTML = answers.length ? answers[0].text : 'No answer found';
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                answerQuestion();
+            }
         }
 
         window.onload = loadModel;
